@@ -28,7 +28,7 @@ export const ZeroDesignSystemScreen = () => {
   ];
 
   return (
-    <div className="relative w-full h-full flex flex-col pt-16 pb-6 px-12 select-none overflow-y-auto">
+    <div className="relative w-full h-full flex flex-col pt-4 pb-6 px-12 select-none overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-3">

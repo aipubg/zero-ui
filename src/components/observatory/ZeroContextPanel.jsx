@@ -20,6 +20,16 @@ import {
 export const ZeroContextPanel = () => {
   const { selectedCapability, setSelectedCapability, navigateTo, theme } = useZero();
 
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setSelectedCapability(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setSelectedCapability]);
+
   if (!selectedCapability) return null;
 
   const cap = ORBIT_CAPABILITIES.find(c => c.id === selectedCapability);

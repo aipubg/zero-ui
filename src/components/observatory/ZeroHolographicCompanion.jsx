@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useZero } from "../../context/ZeroContext";
+import { ZeroThreeHologram } from "./ZeroThreeHologram";
+import { Sparkles, Mic, Activity, CheckCircle, AlertCircle } from "lucide-react";
 
 export const ZeroHolographicCompanion = () => {
-  const { theme, hologramGlow, hologramVisible, isListening } = useZero();
+  const {
+    theme,
+    hologramGlow,
+    hologramVisible,
+    isListening,
+    companionState = "idle"
+  } = useZero();
+
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
 
-  // Subtle 3D spatial tilt reacting to user mouse
+  // Subtle 3D perspective parallax tracking mouse
   useEffect(() => {
     const handleMouseMove = (e) => {
       const { innerWidth, innerHeight } = window;
       const x = (e.clientX - innerWidth / 2) / (innerWidth / 2);
       const y = (e.clientY - innerHeight / 2) / (innerHeight / 2);
-      setMouseOffset({ x: x * 6, y: y * 4 });
+      setMouseOffset({ x: x * 5, y: y * 3 });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -19,134 +28,107 @@ export const ZeroHolographicCompanion = () => {
 
   if (!hologramVisible) return null;
 
+  // Active state determination
+  const activeState = isListening ? "listening" : companionState;
+
   return (
-    <div
-      className="relative flex items-center justify-center pointer-events-none select-none z-15"
-      style={{
-        transform: `perspective(1000px) rotateY(${mouseOffset.x}deg) rotateX(${-mouseOffset.y}deg)`,
-        transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
-      }}
-    >
-      {/* Luminous energy field & floor dais glow beneath character */}
-      <div
-        className="absolute -bottom-16 w-[480px] h-[120px] rounded-[100%] blur-3xl opacity-60 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at center, ${theme.accentPrimary} 0%, ${theme.accentSecondary} 50%, transparent 80%)`,
-          boxShadow: `0 0 ${hologramGlow * 0.8}px ${theme.glow}`
-        }}
-      />
+    <div className="relative w-[640px] h-[640px] flex items-center justify-center select-none pointer-events-none z-15">
+      {/* 1. Three.js WebGL 3D Dais, Light Pillar & Volumetric Particles */}
+      <ZeroThreeHologram companionState={activeState} />
 
-      {/* Floating 3D Concentric Dais Rings on the Floor */}
-      <div className="absolute -bottom-12 flex items-center justify-center pointer-events-none">
-        <div
-          className="w-80 h-28 rounded-[100%] border border-cyan-400/40 animate-orbit-slow"
-          style={{
-            borderColor: theme.accentPrimary,
-            boxShadow: `0 0 16px ${theme.glow}, inset 0 0 16px ${theme.glow}`
-          }}
-        />
-        <div
-          className="absolute w-60 h-20 rounded-[100%] border border-purple-400/30"
-          style={{
-            borderColor: theme.accentSecondary,
-            boxShadow: `0 0 12px ${theme.glowSecondary}`
-          }}
-        />
-        <div
-          className="absolute w-40 h-12 rounded-[100%] border border-amber-300/40 animate-pulse-glow"
-          style={{
-            borderColor: theme.accentTertiary
-          }}
-        />
-      </div>
-
-      {/* Central Holographic Presence Aura */}
+      {/* 2. Character Presence Container with 3D Depth Tilting */}
       <div
-        className="relative flex flex-col items-center justify-center animate-hologram-float"
+        className="relative flex flex-col items-center justify-center transition-transform duration-500 ease-out"
         style={{
-          filter: `drop-shadow(0 0 ${hologramGlow * 0.3}px ${theme.glow})`
+          transform: `perspective(1000px) rotateY(${mouseOffset.x}deg) rotateX(${-mouseOffset.y}deg)`,
+          filter: `drop-shadow(0 0 ${hologramGlow * 0.35}px ${theme.glow})`
         }}
       >
-        {/* Hologram Light Column / Atmospheric Beam */}
+        {/* State-specific Energy Halo Radiating Behind Character Head */}
         <div
-          className="absolute -top-24 w-72 h-[520px] rounded-full blur-2xl opacity-25 pointer-events-none"
+          className={`absolute top-10 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
+            activeState === "listening"
+              ? "opacity-60 scale-125"
+              : activeState === "thinking"
+              ? "opacity-50 scale-110"
+              : "opacity-35 scale-100"
+          }`}
           style={{
-            background: `radial-gradient(ellipse at center, ${theme.accentPrimary} 0%, ${theme.accentSecondary} 60%, transparent 85%)`
+            background: `radial-gradient(circle at center, ${theme.accentPrimary} 0%, ${theme.accentSecondary} 45%, transparent 75%)`
           }}
         />
 
-        {/* Outer Celestial Ring Halo behind Head */}
+        {/* Outer Circular Celestial Starlight Ring behind Head */}
         <div
-          className="absolute top-12 w-64 h-64 rounded-full border border-dashed opacity-40 animate-spin"
+          className="absolute top-16 w-72 h-72 rounded-full border border-dashed opacity-40 animate-spin pointer-events-none"
           style={{
             borderColor: theme.accentTertiary,
-            animationDuration: "45s",
+            animationDuration: "50s",
             boxShadow: `0 0 20px ${theme.glowSecondary}`
           }}
         />
 
-        {/* Luminous Star Orb Floating in AI's Hand */}
-        <div className="absolute top-[48%] right-24 pointer-events-none z-30">
-          <div
-            className="w-12 h-12 rounded-full relative flex items-center justify-center animate-pulse-glow"
-            style={{
-              background: `radial-gradient(circle at 35% 35%, #ffffff 0%, ${theme.accentPrimary} 45%, ${theme.accentSecondary} 90%)`,
-              boxShadow: `0 0 35px 8px ${theme.glow}, 0 0 15px #fff`
-            }}
-          >
-            {/* Orbital micro-rings around the star orb */}
-            <div
-              className="absolute w-20 h-7 rounded-full border border-cyan-300/80 -rotate-12 animate-orbit-slow"
-              style={{ borderColor: theme.accentPrimary }}
-            />
-            <div
-              className="absolute w-16 h-6 rounded-full border border-amber-300/70 rotate-45"
-              style={{ borderColor: theme.accentTertiary }}
-            />
-          </div>
-        </div>
-
-        {/* Living Holographic Character Artwork Canvas with Smooth Blending */}
-        <div className="relative w-[500px] h-[520px] overflow-hidden flex items-center justify-center">
+        {/* Independent Transparent Holographic AI Genie Asset with Smooth Energy Fade */}
+        <div 
+          className="relative w-[480px] h-[540px] flex items-center justify-center animate-hologram-float"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 0%, black 70%, rgba(0,0,0,0.6) 84%, rgba(0,0,0,0.15) 94%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 70%, rgba(0,0,0,0.6) 84%, rgba(0,0,0,0.15) 94%, transparent 100%)"
+          }}
+        >
           <img
-            src="/assets/env-sanctuary.jpg"
-            alt="ZERO Autonomous AI Companion"
-            className="w-full h-full object-cover object-center pointer-events-none"
+            src="/assets/hologram-genie-alpha.png"
+            alt="ZERO Autonomous AI Genie Companion"
+            className="w-full h-full object-contain pointer-events-none"
             style={{
-              clipPath: "ellipse(48% 48% at 50% 50%)",
-              filter: `${theme.hologramFilter} contrast(1.05)`,
-              maskImage: "radial-gradient(circle at 50% 48%, black 45%, rgba(0,0,0,0.85) 65%, transparent 78%)",
-              WebkitMaskImage: "radial-gradient(circle at 50% 48%, black 45%, rgba(0,0,0,0.85) 65%, transparent 78%)"
+              filter: `contrast(1.08) brightness(1.04) drop-shadow(0 12px 24px rgba(0,0,0,0.5))`
             }}
           />
 
-          {/* Holographic Scanline Overlay */}
+          {/* Procedural Holographic Scanline Overlay */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-20"
+            className="absolute inset-0 pointer-events-none opacity-15"
             style={{
-              backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 242, 254, 0.15) 3px, rgba(0, 242, 254, 0.15) 4px)"
+              backgroundImage:
+                "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 242, 254, 0.25) 4px, rgba(0, 242, 254, 0.25) 5px)",
+              maskImage: "radial-gradient(ellipse at center, black 60%, transparent 95%)",
+              WebkitMaskImage: "radial-gradient(ellipse at center, black 60%, transparent 95%)"
             }}
           />
 
-          {/* Voice Listening Active Wave Ring Overlay */}
-          {isListening && (
+          {/* Active Voice Listening Acoustic Wave Ripple */}
+          {activeState === "listening" && (
             <div
-              className="absolute inset-10 rounded-full border-2 border-cyan-400 animate-ping opacity-60"
+              className="absolute top-[48%] right-28 w-24 h-24 rounded-full border-2 animate-ping opacity-75 pointer-events-none"
               style={{ borderColor: theme.accentPrimary }}
             />
           )}
         </div>
 
-        {/* Subtitle / Status Glow Badge */}
-        <div className="absolute bottom-6 flex items-center gap-2 px-4 py-1.5 rounded-full zero-glass-pill border border-cyan-400/30">
+        {/* Subtitle / Holographic Status Indicator Pill */}
+        <div
+          className="absolute -bottom-4 flex items-center gap-2 px-4 py-1.5 rounded-full zero-glass-pill border shadow-xl backdrop-blur-xl"
+          style={{
+            borderColor: theme.borderHighlight,
+            boxShadow: `0 0 16px ${theme.glow}`
+          }}
+        >
           <span
             className="w-2 h-2 rounded-full animate-ping"
             style={{ backgroundColor: theme.accentPrimary }}
           />
           <span className="text-xs font-semibold tracking-wider uppercase text-cyan-200">
-            {isListening ? "Listening..." : "ZERO · Living Intelligence"}
+            {activeState === "listening"
+              ? "ZERO · Listening to Voice"
+              : activeState === "thinking"
+              ? "ZERO · Synthesizing Intent"
+              : activeState === "completed"
+              ? "ZERO · Task Completed"
+              : "ZERO · Living Intelligence"}
           </span>
-          <span className="text-[10px] text-amber-300/80 font-mono">v3.8</span>
+          <span className="text-[10px] text-amber-300 font-mono font-bold">
+            v3.8
+          </span>
         </div>
       </div>
     </div>

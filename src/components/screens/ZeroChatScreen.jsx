@@ -31,10 +31,12 @@ export const ZeroChatScreen = () => {
 
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState(null);
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   const handleSubmit = (e) => {
@@ -53,13 +55,13 @@ export const ZeroChatScreen = () => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-between pt-16 pb-4 px-24 select-none">
+    <div className="relative w-full h-full flex flex-col justify-between pt-4 pb-4 px-12 select-none overflow-hidden">
       {/* Background Subdued Atmosphere */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none"
         style={{
           backgroundImage: "url(/assets/env-sanctuary.jpg)",
-          filter: "blur(20px)"
+          filter: "blur(24px)"
         }}
       />
 
@@ -69,7 +71,7 @@ export const ZeroChatScreen = () => {
           {/* Mini Companion Avatar */}
           <div
             onClick={() => navigateTo("home")}
-            className="w-10 h-10 rounded-2xl overflow-hidden border cursor-pointer hover:scale-105 transition-transform"
+            className="w-10 h-10 rounded-2xl overflow-hidden border cursor-pointer hover:scale-105 transition-transform bg-slate-900/80 flex items-center justify-center p-0.5"
             style={{
               borderColor: theme.accentPrimary,
               boxShadow: `0 0 14px ${theme.glow}`
@@ -77,10 +79,9 @@ export const ZeroChatScreen = () => {
             title="Return to Living Observatory"
           >
             <img
-              src="/assets/env-sanctuary.jpg"
+              src="/assets/hologram-genie-alpha.png"
               alt="ZERO AI"
-              className="w-full h-full object-cover"
-              style={{ filter: theme.hologramFilter }}
+              className="w-full h-full object-contain"
             />
           </div>
 
@@ -112,7 +113,10 @@ export const ZeroChatScreen = () => {
       </div>
 
       {/* Messages Thread */}
-      <div className="relative z-10 flex-1 overflow-y-auto py-6 pr-4 space-y-6">
+      <div 
+        ref={messagesContainerRef}
+        className="relative z-10 flex-1 overflow-y-auto py-6 pr-4 space-y-6"
+      >
         {messages.map((msg) => {
           const isAI = msg.role === "assistant";
           return (
@@ -197,7 +201,6 @@ export const ZeroChatScreen = () => {
             </div>
           );
         })}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Composer Input Area */}

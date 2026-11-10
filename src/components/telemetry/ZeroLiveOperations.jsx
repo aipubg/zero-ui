@@ -14,7 +14,8 @@ import {
   ExternalLink,
   ShieldCheck,
   Zap,
-  Radio
+  Radio,
+  Sliders
 } from "lucide-react";
 
 export const ZeroLiveOperations = () => {
@@ -25,7 +26,9 @@ export const ZeroLiveOperations = () => {
     setLiveOpsTab,
     tasks,
     theme,
-    navigateTo
+    navigateTo,
+    runtimeMode,
+    setRuntimeMode
   } = useZero();
 
   const handleToggle = () => {
@@ -38,7 +41,7 @@ export const ZeroLiveOperations = () => {
     return (
       <button
         onClick={handleToggle}
-        className="fixed right-5 top-24 z-30 flex items-center gap-2.5 px-3 py-2 rounded-full zero-glass-panel border group cursor-pointer shadow-2xl hover:scale-105 transition-all"
+        className="fixed right-5 top-20 z-30 flex items-center gap-2.5 px-3 py-2 rounded-full zero-glass-panel border group cursor-pointer shadow-2xl hover:scale-105 transition-all"
         style={{
           borderColor: theme.accentPrimary,
           boxShadow: `0 0 20px ${theme.glow}`
@@ -68,7 +71,7 @@ export const ZeroLiveOperations = () => {
       className="fixed right-4 top-20 bottom-8 w-80 z-30 flex flex-col justify-between zero-glass-panel rounded-3xl p-4 shadow-2xl select-none border backdrop-blur-3xl animate-in slide-in-from-right duration-300"
       style={{
         borderColor: theme.border,
-        boxShadow: `0 16px 40px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)`
+        boxShadow: `0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12)`
       }}
     >
       {/* Header & Tabs */}
@@ -82,13 +85,18 @@ export const ZeroLiveOperations = () => {
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
           </div>
 
-          <button
-            onClick={handleToggle}
-            className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-            title="Collapse Operations Panel"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-600/50 text-amber-300">
+              {runtimeMode.toUpperCase()}
+            </span>
+            <button
+              onClick={handleToggle}
+              className="p-1 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              title="Collapse Operations Panel"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Tab Switcher */}
@@ -104,7 +112,7 @@ export const ZeroLiveOperations = () => {
                 sound.select();
                 setLiveOpsTab(tab.id);
               }}
-              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 liveOpsTab === tab.id
                   ? "bg-cyan-500/20 text-cyan-200 border border-cyan-500/40 shadow-sm"
                   : "text-slate-400 hover:text-slate-200"
@@ -225,7 +233,7 @@ export const ZeroLiveOperations = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">Window in Focus:</span>
-                <span className="text-slate-200 font-mono font-medium">VS Code</span>
+                <span className="text-slate-200 font-mono font-medium">Visual Studio Code</span>
               </div>
             </div>
           </div>

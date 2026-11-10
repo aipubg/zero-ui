@@ -69,9 +69,12 @@ export const ZeroAppShell = () => {
 
       {/* Main Center Stage */}
       <main
-        className={`relative flex-1 w-full h-full transition-all duration-300 ${
-          spatialRailExpanded ? "pl-64" : "pl-20"
-        } ${liveOpsOpen && currentScreen === "home" ? "pr-84" : "pr-4"}`}
+        className="relative flex-1 w-full h-full transition-all duration-300"
+        style={{
+          paddingTop: currentScreen !== "home" ? "4.5rem" : 0,
+          paddingLeft: spatialRailExpanded ? "17rem" : "5.5rem",
+          paddingRight: liveOpsOpen && currentScreen === "home" ? "22rem" : "1.5rem"
+        }}
       >
         {renderActiveScreen()}
       </main>

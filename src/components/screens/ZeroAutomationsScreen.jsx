@@ -70,7 +70,7 @@ export const ZeroAutomationsScreen = () => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col pt-16 pb-6 px-12 select-none">
+    <div className="relative w-full h-full flex flex-col pt-4 pb-6 px-12 select-none">
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-slate-800">
         <div className="flex items-center gap-3">

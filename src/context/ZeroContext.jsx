@@ -15,6 +15,7 @@ export const ZeroProvider = ({ children }) => {
   const [mascotPreset, setMascotPreset] = useState("cream-blue");
   const [mascotVisible, setMascotVisible] = useState(true);
   const [mascotEmotion, setMascotEmotion] = useState("happy");
+  const [companionState, setCompanionState] = useState("idle"); // idle | listening | thinking | responding | working | completed | unavailable
   const [activeModel, setActiveModel] = useState("nemotron-3.5-lightning");
   const [activeWorkspace, setActiveWorkspace] = useState("Personal workspace");
   const [liveOpsOpen, setLiveOpsOpen] = useState(true);
@@ -24,6 +25,9 @@ export const ZeroProvider = ({ children }) => {
   const [isListening, setIsListening] = useState(false);
   const [searchPaletteOpen, setSearchPaletteOpen] = useState(false);
   const [spatialRailExpanded, setSpatialRailExpanded] = useState(false);
+
+  // Runtime Mode: "demo" (labeled illustrative content) | "connected" (live gateway adapter) | "unavailable" (offline diagnostics)
+  const [runtimeMode, setRuntimeMode] = useState("demo");
 
   const theme = THEMES[themeId] || THEMES["astral-violet"];
   const currentEnv = ENVIRONMENTS.find(e => e.id === envId) || ENVIRONMENTS[0];
@@ -78,7 +82,7 @@ export const ZeroProvider = ({ children }) => {
     if (next) sound.select();
   };
 
-  // Mock initial tasks
+  // Explicitly labeled Task Store
   const [tasks, setTasks] = useState([
     {
       id: "task-1",
@@ -87,7 +91,8 @@ export const ZeroProvider = ({ children }) => {
       progress: 78,
       status: "running",
       time: "2m ago",
-      icon: "Search"
+      icon: "Search",
+      isDemo: true
     },
     {
       id: "task-2",
@@ -96,7 +101,8 @@ export const ZeroProvider = ({ children }) => {
       progress: 35,
       status: "running",
       time: "6m ago",
-      icon: "Folder"
+      icon: "Folder",
+      isDemo: true
     },
     {
       id: "task-3",
@@ -105,18 +111,20 @@ export const ZeroProvider = ({ children }) => {
       progress: 100,
       status: "completed",
       time: "12m ago",
-      icon: "CheckCircle"
+      icon: "CheckCircle",
+      isDemo: true
     }
   ]);
 
-  // Mock Chat Messages
+  // Explicitly labeled Message Thread
   const [messages, setMessages] = useState([
     {
       id: "msg-1",
       role: "assistant",
       timestamp: "10:22 PM",
       content: "Good evening, Owner. All 14 model routes are calibrated, your local computer hold bridge is active, and the Living Observatory is synchronized. What would you like to achieve today?",
-      tools: null
+      tools: null,
+      isDemo: true
     },
     {
       id: "msg-2",
@@ -141,12 +149,15 @@ export const ZeroProvider = ({ children }) => {
           status: "success",
           result: "Display 1 (1920x1080) active. Chrome window in focus, terminal background task idle."
         }
-      ]
+      ],
+      isDemo: true
     }
   ]);
 
   const addMessage = (content) => {
     sound.pulse();
+    setCompanionState("thinking");
+
     const newMsg = {
       id: `msg-${Date.now()}`,
       role: "user",
@@ -155,25 +166,43 @@ export const ZeroProvider = ({ children }) => {
     };
     setMessages(prev => [...prev, newMsg]);
 
-    // Simulate AI response
-    setTimeout(() => {
-      sound.select();
-      setMascotEmotion("happy");
-      const aiReply = {
-        id: `msg-${Date.now() + 1}`,
-        role: "assistant",
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        content: `I've received your directive: "${content}". Engaging coordinated model fabric and orchestrating autonomous workflows across the observatory.`,
-        tools: [
-          {
-            name: "gateway_fabric:dispatch",
-            status: "success",
-            result: `Dispatched intent to ${activeModel}. Execution underway.`
-          }
-        ]
-      };
-      setMessages(prev => [...prev, aiReply]);
-    }, 900);
+    if (runtimeMode === "demo") {
+      setTimeout(() => {
+        sound.select();
+        setCompanionState("responding");
+        setMascotEmotion("happy");
+
+        const aiReply = {
+          id: `msg-${Date.now() + 1}`,
+          role: "assistant",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          content: `Received directive: "${content}". Engaging coordinated model fabric and orchestrating autonomous workflows across the observatory.`,
+          tools: [
+            {
+              name: "gateway_fabric:dispatch",
+              status: "success",
+              result: `Dispatched intent to ${activeModel}. Execution underway.`
+            }
+          ],
+          isDemo: true
+        };
+        setMessages(prev => [...prev, aiReply]);
+        setTimeout(() => setCompanionState("idle"), 2500);
+      }, 900);
+    } else if (runtimeMode === "unavailable") {
+      setTimeout(() => {
+        sound.hover();
+        setCompanionState("unavailable");
+        const errReply = {
+          id: `msg-${Date.now() + 1}`,
+          role: "assistant",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          content: `Gateway Adapter Unavailable: Could not establish WebSocket link to ws://localhost:18789. Please check Gateway status in Settings.`,
+          isError: true
+        };
+        setMessages(prev => [...prev, errReply]);
+      }, 500);
+    }
   };
 
   return (
@@ -203,6 +232,8 @@ export const ZeroProvider = ({ children }) => {
         setMascotVisible,
         mascotEmotion,
         setMascotEmotion,
+        companionState,
+        setCompanionState,
         activeModel,
         setActiveModel,
         activeWorkspace,
@@ -221,6 +252,8 @@ export const ZeroProvider = ({ children }) => {
         setSearchPaletteOpen,
         spatialRailExpanded,
         setSpatialRailExpanded,
+        runtimeMode,
+        setRuntimeMode,
         tasks,
         setTasks,
         messages,

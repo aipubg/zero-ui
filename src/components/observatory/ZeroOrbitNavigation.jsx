@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useZero } from "../../context/ZeroContext";
 import { ORBIT_CAPABILITIES } from "../../theme/tokens";
 import { sound } from "../../utils/audio";
@@ -9,9 +9,7 @@ import {
   Zap,
   Monitor,
   Sparkles,
-  Blocks,
-  Search,
-  FolderGit2
+  Blocks
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -21,36 +19,86 @@ const ICON_MAP = {
   Zap,
   Monitor,
   Sparkles,
-  Blocks,
-  Search,
-  FolderGit2
+  Blocks
 };
 
 export const ZeroOrbitNavigation = () => {
   const { theme, selectedCapability, setSelectedCapability, reducedMotion } = useZero();
-  const [rotationOffset, setRotationOffset] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
   const [hoveredNode, setHoveredNode] = useState(null);
+  const [dimensions, setDimensions] = useState({ rx: 340, ry: 190 });
 
-  // Slow continuous orbital revolution when not paused or hovering
+  const nodeRefs = useRef({});
+  const rotationAngleRef = useRef(0);
+  const isPausedRef = useRef(false);
+  const animFrameIdRef = useRef(null);
+
+  // 1. Viewport-Responsive Radius Calculation
   useEffect(() => {
-    if (reducedMotion || selectedCapability || isHovered) return;
-    const interval = setInterval(() => {
-      setRotationOffset(prev => (prev + 0.15) % 360);
-    }, 40);
-    return () => clearInterval(interval);
-  }, [reducedMotion, selectedCapability, isHovered]);
+    const handleResize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // Responsive elliptical dimensions that scale naturally from 1366x768 to 2560x1440
+      const rx = Math.min(420, Math.max(250, w * 0.23));
+      const ry = Math.min(220, Math.max(135, h * 0.19));
+      setDimensions({ rx, ry });
+    };
 
-  const rx = 340; // horizontal radius
-  const ry = 190; // vertical perspective radius
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Update pause ref when hover or selection changes (avoids re-binding the rAF loop)
+  useEffect(() => {
+    isPausedRef.current = !!(selectedCapability || hoveredNode || reducedMotion);
+  }, [selectedCapability, hoveredNode, reducedMotion]);
+
+  // 2. High-Performance requestAnimationFrame Loop (Direct DOM Transform — Zero React Rerenders!)
+  useEffect(() => {
+    const { rx, ry } = dimensions;
+
+    const animateOrbit = () => {
+      if (!isPausedRef.current) {
+        rotationAngleRef.current = (rotationAngleRef.current + 0.18) % 360;
+      }
+
+      const rot = rotationAngleRef.current;
+
+      ORBIT_CAPABILITIES.forEach((cap) => {
+        const el = nodeRefs.current[cap.id];
+        if (!el) return;
+
+        const rad = ((cap.angle + rot) * Math.PI) / 180;
+        const x = rx * Math.cos(rad);
+        const y = ry * Math.sin(rad);
+
+        // Genuine 3D Depth Perception:
+        // Depth factor ranges from 0.0 (deep in back) to 1.0 (close in front)
+        const depth = (y + ry) / (ry * 2);
+        const scale = 0.82 + depth * 0.35;
+        const opacity = 0.6 + depth * 0.4;
+        const zIndex = Math.floor(10 + depth * 20);
+
+        el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+        el.style.opacity = `${opacity}`;
+        el.style.zIndex = `${zIndex}`;
+      });
+
+      animFrameIdRef.current = requestAnimationFrame(animateOrbit);
+    };
+
+    animFrameIdRef.current = requestAnimationFrame(animateOrbit);
+
+    return () => {
+      if (animFrameIdRef.current) {
+        cancelAnimationFrame(animFrameIdRef.current);
+      }
+    };
+  }, [dimensions]);
 
   const handleNodeClick = (cap) => {
     sound.select();
-    if (selectedCapability === cap.id) {
-      setSelectedCapability(null);
-    } else {
-      setSelectedCapability(cap.id);
-    }
+    setSelectedCapability(selectedCapability === cap.id ? null : cap.id);
   };
 
   const handleNodeHover = (cap) => {
@@ -61,145 +109,113 @@ export const ZeroOrbitNavigation = () => {
   return (
     <div
       className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-20"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setHoveredNode(null);
-      }}
+      onMouseLeave={() => setHoveredNode(null)}
     >
-      {/* SVG Elliptical Orbital Rails & Glowing Vector Arcs */}
+      {/* Dynamic Responsive SVG Elliptical Rails */}
       <svg
-        className="absolute w-[800px] h-[480px] pointer-events-none overflow-visible"
-        viewBox="-400 -240 800 480"
+        className="absolute pointer-events-none overflow-visible"
+        style={{
+          width: dimensions.rx * 2 + 100,
+          height: dimensions.ry * 2 + 60
+        }}
+        viewBox={`${-dimensions.rx - 50} ${-dimensions.ry - 30} ${
+          dimensions.rx * 2 + 100
+        } ${dimensions.ry * 2 + 60}`}
       >
         <defs>
-          <linearGradient id="orbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={theme.accentPrimary} stopOpacity="0.6" />
+          <linearGradient id="orbitGlowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={theme.accentPrimary} stopOpacity="0.75" />
             <stop offset="50%" stopColor={theme.accentSecondary} stopOpacity="0.25" />
-            <stop offset="100%" stopColor={theme.accentTertiary} stopOpacity="0.5" />
+            <stop offset="100%" stopColor={theme.accentTertiary} stopOpacity="0.65" />
           </linearGradient>
-          <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <filter id="vectorGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
-        {/* Primary Elliptical Orbit Track */}
+        {/* Primary Luminous Elliptical Orbit Track */}
         <ellipse
           cx="0"
           cy="0"
-          rx={rx}
-          ry={ry}
+          rx={dimensions.rx}
+          ry={dimensions.ry}
           fill="none"
-          stroke="url(#orbitGrad)"
-          strokeWidth="1.5"
-          strokeDasharray="6 8"
-          filter="url(#glowFilter)"
+          stroke="url(#orbitGlowGradient)"
+          strokeWidth="1.75"
+          strokeDasharray="8 10"
+          filter="url(#vectorGlow)"
           className="opacity-70"
         />
 
-        {/* Inner Secondary Orbital Ring */}
+        {/* Inner Coordinate Ring */}
         <ellipse
           cx="0"
           cy="0"
-          rx={rx * 0.72}
-          ry={ry * 0.72}
+          rx={dimensions.rx * 0.76}
+          ry={dimensions.ry * 0.76}
           fill="none"
           stroke={theme.accentPrimary}
           strokeWidth="0.75"
-          strokeOpacity="0.25"
-          strokeDasharray="3 9"
+          strokeOpacity="0.2"
+          strokeDasharray="4 12"
         />
-
-        {/* Active Node Laser Connector Lines */}
-        {selectedCapability && (() => {
-          const activeCap = ORBIT_CAPABILITIES.find(c => c.id === selectedCapability);
-          if (!activeCap) return null;
-          const rad = ((activeCap.angle + rotationOffset) * Math.PI) / 180;
-          const nx = rx * Math.cos(rad);
-          const ny = ry * Math.sin(rad);
-          return (
-            <g>
-              <line
-                x1="0"
-                y1="0"
-                x2={nx}
-                y2={ny}
-                stroke={theme.accentPrimary}
-                strokeWidth="1.5"
-                strokeDasharray="4 4"
-                className="animate-pulse"
-                filter="url(#glowFilter)"
-              />
-              <circle
-                cx={nx}
-                cy={ny}
-                r="30"
-                fill="none"
-                stroke={theme.accentPrimary}
-                strokeWidth="1.5"
-                opacity="0.8"
-                className="animate-ping"
-              />
-            </g>
-          );
-        })()}
       </svg>
 
-      {/* Floating Orbital Interactive Capability Nodes */}
+      {/* Floating Spatial Nodes */}
       {ORBIT_CAPABILITIES.map((cap) => {
-        const rad = ((cap.angle + rotationOffset) * Math.PI) / 180;
-        const x = rx * Math.cos(rad);
-        const y = ry * Math.sin(rad);
         const isSelected = selectedCapability === cap.id;
         const isHover = hoveredNode?.id === cap.id;
-        const IconComponent = ICON_MAP[cap.icon] || Sparkles;
-
-        // Depth scale: nodes further in the back (negative y) are slightly smaller
-        const depthScale = 0.88 + ((y + ry) / (ry * 2)) * 0.24;
+        const Icon = ICON_MAP[cap.icon] || Sparkles;
 
         return (
           <div
             key={cap.id}
-            style={{
-              transform: `translate3d(${x}px, ${y}px, 0) scale(${depthScale})`,
-              transition: isHovered ? "transform 0.15s ease" : "none"
-            }}
-            className="absolute pointer-events-auto flex flex-col items-center justify-center cursor-pointer group"
+            data-orbit-id={cap.id}
+            ref={(el) => (nodeRefs.current[cap.id] = el)}
             onClick={() => handleNodeClick(cap)}
             onMouseEnter={() => handleNodeHover(cap)}
+            className="absolute pointer-events-auto flex flex-col items-center justify-center cursor-pointer group select-none will-change-transform"
           >
-            {/* Luminous Node Core */}
+            {/* Luminous Core Ring (No bulky box!) */}
             <div
               className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                 isSelected
-                  ? "scale-125 ring-2 ring-cyan-300 shadow-[0_0_28px_var(--zero-glow)] bg-cyan-950/80"
-                  : "hover:scale-115 hover:shadow-[0_0_20px_var(--zero-glow)] bg-slate-950/75"
+                  ? "ring-2 ring-cyan-300 shadow-[0_0_28px_var(--zero-glow)] bg-cyan-950/90 scale-120"
+                  : isHover
+                  ? "scale-115 shadow-[0_0_20px_var(--zero-glow)] bg-slate-900/90"
+                  : "bg-slate-950/80"
               }`}
               style={{
-                border: `1.5px solid ${isSelected ? theme.accentPrimary : "rgba(255, 255, 255, 0.18)"}`,
-                backdropFilter: "blur(12px)"
+                border: `1.5px solid ${
+                  isSelected
+                    ? theme.accentPrimary
+                    : isHover
+                    ? "rgba(255, 255, 255, 0.4)"
+                    : "rgba(255, 255, 255, 0.18)"
+                }`,
+                backdropFilter: "blur(14px)"
               }}
             >
-              {/* Outer micro orbital pulse */}
+              {/* Outer micro-dashed orbit spinner */}
               <div
-                className="absolute inset-0 rounded-full border border-dashed opacity-0 group-hover:opacity-80 animate-spin"
+                className="absolute inset-0 rounded-full border border-dashed opacity-0 group-hover:opacity-80 animate-spin pointer-events-none"
                 style={{
                   borderColor: cap.color,
                   animationDuration: "8s"
                 }}
               />
 
-              {/* Icon */}
-              <IconComponent
+              {/* Node Icon */}
+              <Icon
                 className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
                 style={{
                   color: isSelected ? "#ffffff" : cap.color,
-                  filter: isSelected ? `drop-shadow(0 0 8px ${cap.color})` : "none"
+                  filter: isSelected ? `drop-shadow(0 0 10px ${cap.color})` : "none"
                 }}
               />
 
-              {/* Active selection dot */}
+              {/* Active selection ping dot */}
               {isSelected && (
                 <span
                   className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"
@@ -208,13 +224,13 @@ export const ZeroOrbitNavigation = () => {
               )}
             </div>
 
-            {/* Minimal Holographic Label Pill (No bulky box!) */}
+            {/* Minimal Holographic Floating Label */}
             <div
               className={`mt-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-300 pointer-events-none flex items-center gap-1.5 ${
                 isSelected
-                  ? "bg-cyan-500/25 border border-cyan-400 text-white shadow-lg"
+                  ? "bg-cyan-500/30 border border-cyan-400 text-white shadow-lg"
                   : isHover
-                  ? "bg-slate-900/90 border border-slate-600 text-slate-100"
+                  ? "bg-slate-900/95 border border-slate-600 text-slate-100 shadow-md"
                   : "bg-slate-950/60 border border-slate-800/80 text-slate-300 opacity-80"
               }`}
             >
@@ -224,9 +240,9 @@ export const ZeroOrbitNavigation = () => {
               )}
             </div>
 
-            {/* Hover Micro-Badge with Quick Status */}
+            {/* Hover Micro Status Badge */}
             {isHover && !isSelected && (
-              <div className="absolute top-16 px-2 py-0.5 rounded-md bg-black/90 border border-slate-700 text-[10px] text-cyan-200 whitespace-nowrap shadow-xl animate-fade-in">
+              <div className="absolute top-16 px-2.5 py-1 rounded-lg bg-black/95 border border-slate-700 text-[10px] text-cyan-200 whitespace-nowrap shadow-2xl pointer-events-none animate-in fade-in duration-200 z-50">
                 {cap.shortDesc}
               </div>
             )}
