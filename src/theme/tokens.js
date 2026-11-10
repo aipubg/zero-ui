@@ -1,0 +1,201 @@
+export const THEMES = {
+  "astral-violet": {
+    id: "astral-violet",
+    name: "Astral Violet & Starlight Gold",
+    description: "Signature celestial observatory palette with rich violet, electric cyan, and antique gold accents.",
+    accentPrimary: "#00f2fe",
+    accentSecondary: "#9d4edd",
+    accentTertiary: "#ffd166",
+    glow: "rgba(0, 242, 254, 0.45)",
+    glowSecondary: "rgba(157, 78, 221, 0.4)",
+    glass: "rgba(10, 14, 28, 0.65)",
+    surface: "rgba(16, 22, 42, 0.75)",
+    surfaceSolid: "#0b0f1d",
+    border: "rgba(157, 78, 221, 0.28)",
+    borderHighlight: "rgba(0, 242, 254, 0.6)",
+    text: "#f0f4fc",
+    muted: "#8899b7",
+    orbit: "rgba(0, 242, 254, 0.35)",
+    characterAccent: "#7b2cbf",
+    hologramFilter: "hue-rotate(0deg) saturate(1.15) brightness(1.05)",
+    backgroundAsset: "/assets/env-sanctuary.jpg",
+    mascotColor: "cream-blue"
+  },
+  "ethereal-cyan": {
+    id: "ethereal-cyan",
+    name: "Ethereal Cyan & Icy Prism",
+    description: "Ultra-crisp holographic technology feel with pure cyan, teal starlight, and diamond sheen.",
+    accentPrimary: "#00f0ff",
+    accentSecondary: "#00a8ff",
+    accentTertiary: "#70e000",
+    glow: "rgba(0, 240, 255, 0.55)",
+    glowSecondary: "rgba(0, 168, 255, 0.35)",
+    glass: "rgba(8, 20, 32, 0.65)",
+    surface: "rgba(12, 30, 48, 0.75)",
+    surfaceSolid: "#07131f",
+    border: "rgba(0, 240, 255, 0.3)",
+    borderHighlight: "rgba(0, 240, 255, 0.75)",
+    text: "#e8f7ff",
+    muted: "#729bb5",
+    orbit: "rgba(0, 240, 255, 0.4)",
+    characterAccent: "#00c3ff",
+    hologramFilter: "hue-rotate(180deg) saturate(1.2) brightness(1.1)",
+    backgroundAsset: "/assets/env-cathedral.jpg",
+    mascotColor: "frost-white"
+  },
+  "solar-amber": {
+    id: "solar-amber",
+    name: "Solar Amber & Antique Lantern",
+    description: "Warm candlelit celestial sanctuary with rich golden embers, warm topaz, and rose-bronze glow.",
+    accentPrimary: "#ffb703",
+    accentSecondary: "#fb8500",
+    accentTertiary: "#ff006e",
+    glow: "rgba(255, 183, 3, 0.5)",
+    glowSecondary: "rgba(251, 133, 0, 0.4)",
+    glass: "rgba(26, 18, 12, 0.65)",
+    surface: "rgba(38, 26, 18, 0.75)",
+    surfaceSolid: "#150d08",
+    border: "rgba(255, 183, 3, 0.3)",
+    borderHighlight: "rgba(255, 183, 3, 0.7)",
+    text: "#fff8ee",
+    muted: "#ba9f88",
+    orbit: "rgba(255, 183, 3, 0.4)",
+    characterAccent: "#d48b00",
+    hologramFilter: "hue-rotate(35deg) saturate(1.3) brightness(1.05)",
+    backgroundAsset: "/assets/env-library.jpg",
+    mascotColor: "golden-honey"
+  },
+  "emerald-aurora": {
+    id: "emerald-aurora",
+    name: "Emerald Aurora & Quantum Mint",
+    description: "Deep nocturnal cyber-botanical aesthetic with luminescent emerald, jade ripples, and soft lime.",
+    accentPrimary: "#10b981",
+    accentSecondary: "#06b6d4",
+    accentTertiary: "#3b82f6",
+    glow: "rgba(16, 185, 129, 0.5)",
+    glowSecondary: "rgba(6, 182, 212, 0.35)",
+    glass: "rgba(8, 24, 20, 0.65)",
+    surface: "rgba(14, 36, 30, 0.75)",
+    surfaceSolid: "#061510",
+    border: "rgba(16, 185, 129, 0.3)",
+    borderHighlight: "rgba(16, 185, 129, 0.7)",
+    text: "#ecfdf5",
+    muted: "#6ee7b7",
+    orbit: "rgba(16, 185, 129, 0.4)",
+    characterAccent: "#059669",
+    hologramFilter: "hue-rotate(90deg) saturate(1.2) brightness(1.0)",
+    backgroundAsset: "/assets/env-sanctuary.jpg",
+    mascotColor: "mint-sage"
+  },
+  "cosmic-amethyst": {
+    id: "cosmic-amethyst",
+    name: "Cosmic Amethyst & Royal Velvet",
+    description: "Deep mystic space with vivid magenta starlight, ultraviolet nebulae, and twilight shadows.",
+    accentPrimary: "#e0aaff",
+    accentSecondary: "#c77dff",
+    accentTertiary: "#7b2cbf",
+    glow: "rgba(224, 170, 255, 0.5)",
+    glowSecondary: "rgba(199, 125, 255, 0.4)",
+    glass: "rgba(20, 10, 30, 0.65)",
+    surface: "rgba(32, 16, 48, 0.75)",
+    surfaceSolid: "#100618",
+    border: "rgba(199, 125, 255, 0.3)",
+    borderHighlight: "rgba(224, 170, 255, 0.7)",
+    text: "#faf5ff",
+    muted: "#b8a2c7",
+    orbit: "rgba(224, 170, 255, 0.4)",
+    characterAccent: "#9d4edd",
+    hologramFilter: "hue-rotate(-40deg) saturate(1.3) brightness(1.08)",
+    backgroundAsset: "/assets/env-welcoming-hand.jpg",
+    mascotColor: "lavender-puff"
+  }
+};
+
+export const ENVIRONMENTS = [
+  { id: "sanctuary", name: "Night Observatory Sanctuary", path: "/assets/env-sanctuary.jpg", desc: "Moonlit celestial arch with cherry blossoms & starry castle" },
+  { id: "cathedral", name: "Celestial Gothic Cathedral", path: "/assets/env-cathedral.jpg", desc: "Soaring gothic glass arches overlooking a moonlit clock city" },
+  { id: "library", name: "Moonlit Archive & Lanterns", path: "/assets/env-library.jpg", desc: "Cozy magical library lined with books, soft lantern light & blossoms" },
+  { id: "desk", name: "Robot Pilot Observatory", path: "/assets/env-robot-desk.jpg", desc: "Interactive tactical workstation with multi-screen holograms" },
+  { id: "cyber", name: "Minimal Quantum Hologram", path: "/assets/env-cyber-avatar.jpg", desc: "Pure 3D laser wireframe and luminous vector ring arrays" }
+];
+
+export const MASCOT_PRESETS = [
+  { id: "cream-blue", name: "Classic Cloud", primary: "#f8f9fa", accent: "#70d6ff", eyes: "cyan", expression: "Friendly" },
+  { id: "frost-white", name: "Polar Ice", primary: "#edf2f4", accent: "#00b4d8", eyes: "ice-blue", expression: "Curious" },
+  { id: "golden-honey", name: "Amber Sparks", primary: "#fefae0", accent: "#dda15e", eyes: "amber", expression: "Proud" },
+  { id: "mint-sage", name: "Cyber Sprout", primary: "#e8f5e9", accent: "#48cae4", eyes: "emerald", expression: "Happy" },
+  { id: "lavender-puff", name: "Twilight Dreamer", primary: "#f3e8ff", accent: "#c084fc", eyes: "violet", expression: "Sleepy" }
+];
+
+export const ORBIT_CAPABILITIES = [
+  {
+    id: "memory",
+    label: "Memory",
+    icon: "Brain",
+    shortDesc: "8 Layers · 12.4 GB Knowledge",
+    color: "#00f2fe",
+    path: "/memory",
+    badge: "3.8k Items",
+    angle: -90 // top
+  },
+  {
+    id: "agents",
+    label: "Agents",
+    icon: "Bot",
+    shortDesc: "4 Active · 2 Idle Specialists",
+    color: "#9d4edd",
+    path: "/agents",
+    badge: "Team Ready",
+    angle: -45 // top right
+  },
+  {
+    id: "models",
+    label: "Models",
+    icon: "Cpu",
+    shortDesc: "5 Providers · 14 Routing Models",
+    color: "#ffd166",
+    path: "/models",
+    badge: "Auto-Routing",
+    angle: 0 // right
+  },
+  {
+    id: "automations",
+    label: "Automations",
+    icon: "Zap",
+    shortDesc: "6 Scheduled · 2 Running Now",
+    color: "#06d6a0",
+    path: "/automations",
+    badge: "Next in 14m",
+    angle: 45 // bottom right
+  },
+  {
+    id: "computer",
+    label: "Computer",
+    icon: "Monitor",
+    shortDesc: "Screen Intel Active · Display 1",
+    color: "#4cc9f0",
+    path: "/computer",
+    badge: "Direct Control",
+    angle: 135 // bottom left
+  },
+  {
+    id: "skills",
+    label: "Skills",
+    icon: "Sparkles",
+    shortDesc: "12 Installed Capabilities",
+    color: "#f72585",
+    path: "/skills",
+    badge: "Verified",
+    angle: 180 // left
+  },
+  {
+    id: "plugins",
+    label: "Plugins",
+    icon: "Blocks",
+    shortDesc: "6 Active External Bridges",
+    color: "#7209b7",
+    path: "/plugins",
+    badge: "All Syncing",
+    angle: 225 // top left
+  }
+];
