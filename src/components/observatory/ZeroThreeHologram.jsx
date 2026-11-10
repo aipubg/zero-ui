@@ -32,108 +32,82 @@ export const ZeroThreeHologram = ({ companionState = "idle" }) => {
 
     // 1. Concentric Holographic Ground Dais / Pedestal
     const daisGroup = new THREE.Group();
-    daisGroup.position.set(0, -2.6, 0);
+    daisGroup.position.set(0, -3.2, 0);
     daisGroup.rotation.x = Math.PI * 0.38; // 3D perspective tilt
     scene.add(daisGroup);
 
-    // Outer Ring
-    const outerRingGeo = new THREE.RingGeometry(2.4, 2.45, 64);
+    // Tier 1: Outer Celestial Dais Base Ring
+    const outerRingGeo = new THREE.RingGeometry(3.6, 3.75, 64);
     const outerRingMat = new THREE.MeshBasicMaterial({
-      color: primaryHex,
+      color: goldHex,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.6,
       blending: THREE.AdditiveBlending
     });
     const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
     daisGroup.add(outerRing);
 
-    // Middle Segmented Ring
-    const midRingGeo = new THREE.TorusGeometry(1.8, 0.02, 16, 64);
-    const midRingMat = new THREE.MeshBasicMaterial({
-      color: secondaryHex,
+    // Tier 2: Golden Runic Segmented Dais Tier
+    const runeTierGeo = new THREE.RingGeometry(2.9, 3.15, 64);
+    const runeTierMat = new THREE.MeshBasicMaterial({
+      color: goldHex,
+      side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
+    });
+    const runeTier = new THREE.Mesh(runeTierGeo, runeTierMat);
+    daisGroup.add(runeTier);
+
+    // Tier 3: Electric Cyan Orbit Ring
+    const midRingGeo = new THREE.TorusGeometry(2.35, 0.04, 16, 64);
+    const midRingMat = new THREE.MeshBasicMaterial({
+      color: primaryHex,
+      transparent: true,
+      opacity: 0.9,
       blending: THREE.AdditiveBlending
     });
     const midRing = new THREE.Mesh(midRingGeo, midRingMat);
     daisGroup.add(midRing);
 
-    // Inner Glowing Core Ring
-    const innerRingGeo = new THREE.RingGeometry(1.0, 1.05, 48);
+    // Tier 4: Inner Core Violet Energy Ring
+    const innerRingGeo = new THREE.RingGeometry(1.5, 1.62, 48);
     const innerRingMat = new THREE.MeshBasicMaterial({
-      color: goldHex,
+      color: secondaryHex,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.85,
       blending: THREE.AdditiveBlending
     });
     const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat);
     daisGroup.add(innerRing);
 
-    // 2. 3D Volumetric Light Pillar (Ascending Hologram Beam)
-    const pillarGeo = new THREE.CylinderGeometry(1.2, 1.8, 4.8, 32, 1, true);
-    const pillarMat = new THREE.MeshBasicMaterial({
-      color: primaryHex,
-      transparent: true,
-      opacity: 0.08,
-      side: THREE.DoubleSide,
-      blending: THREE.AdditiveBlending
-    });
-    const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-    pillar.position.set(0, -0.4, 0);
-    scene.add(pillar);
-
-    // 3. 3D Floating Star Orb in AI's Hand (Right Center)
-    const orbGroup = new THREE.Group();
-    orbGroup.position.set(0.95, -0.15, 0.4);
-    scene.add(orbGroup);
-
-    // Luminous Star Core
-    const orbCoreGeo = new THREE.SphereGeometry(0.16, 24, 24);
-    const orbCoreMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.95
-    });
-    const orbCore = new THREE.Mesh(orbCoreGeo, orbCoreMat);
-    orbGroup.add(orbCore);
-
-    // Outer Glow Shell
-    const orbGlowGeo = new THREE.SphereGeometry(0.26, 24, 24);
-    const orbGlowMat = new THREE.MeshBasicMaterial({
-      color: primaryHex,
-      transparent: true,
-      opacity: 0.4,
-      blending: THREE.AdditiveBlending
-    });
-    const orbGlow = new THREE.Mesh(orbGlowGeo, orbGlowMat);
-    orbGroup.add(orbGlow);
-
-    // Tilted Orbital Rings around Star Orb
-    const orbRing1Geo = new THREE.TorusGeometry(0.36, 0.012, 16, 48);
-    const orbRing1Mat = new THREE.MeshBasicMaterial({
+    // Tier 5: Innermost Star Rune Ring
+    const coreRuneGeo = new THREE.RingGeometry(0.85, 0.95, 32);
+    const coreRuneMat = new THREE.MeshBasicMaterial({
       color: goldHex,
+      side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.95,
       blending: THREE.AdditiveBlending
     });
-    const orbRing1 = new THREE.Mesh(orbRing1Geo, orbRing1Mat);
-    orbRing1.rotation.x = Math.PI * 0.25;
-    orbGroup.add(orbRing1);
+    const coreRune = new THREE.Mesh(coreRuneGeo, coreRuneMat);
+    daisGroup.add(coreRune);
 
-    const orbRing2Geo = new THREE.TorusGeometry(0.44, 0.01, 16, 48);
-    const orbRing2Mat = new THREE.MeshBasicMaterial({
+    // Tier 6: Glowing Central Dais Starlight Pool
+    const daisDiskGeo = new THREE.CircleGeometry(0.82, 32);
+    const daisDiskMat = new THREE.MeshBasicMaterial({
       color: primaryHex,
+      side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.45,
       blending: THREE.AdditiveBlending
     });
-    const orbRing2 = new THREE.Mesh(orbRing2Geo, orbRing2Mat);
-    orbRing2.rotation.y = Math.PI * 0.35;
-    orbGroup.add(orbRing2);
+    const daisDisk = new THREE.Mesh(daisDiskGeo, daisDiskMat);
+    daisGroup.add(daisDisk);
 
-    // 4. 3D Spiral Stardust Particle Cloud (Floating around character)
+    // 2. 3D Spiral Stardust Particle Cloud (Floating around character)
     const particleCount = 180;
     const particleGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
@@ -212,29 +186,6 @@ export const ZeroThreeHologram = ({ companionState = "idle" }) => {
       outerRing.rotation.z += delta * 0.15;
       midRing.rotation.z -= delta * 0.22;
       innerRing.rotation.z += delta * 0.35;
-
-      // Animate star orb rings
-      orbRing1.rotation.x += delta * 0.8;
-      orbRing1.rotation.y += delta * 0.6;
-      orbRing2.rotation.y += delta * 0.7;
-      orbRing2.rotation.z += delta * 0.5;
-
-      // State-specific animation speed & scale
-      let pulseSpeed = 2.0;
-      let orbScale = 1.0;
-      if (companionState === "listening") {
-        pulseSpeed = 4.5;
-        orbScale = 1.15;
-      } else if (companionState === "thinking") {
-        pulseSpeed = 6.0;
-        orbRing1.rotation.x += delta * 2.0;
-      } else if (companionState === "completed") {
-        orbScale = 1.3;
-      }
-
-      const pulse = 1.0 + Math.sin(elapsed * pulseSpeed) * 0.06;
-      orbCore.scale.set(orbScale * pulse, orbScale * pulse, orbScale * pulse);
-      orbGlow.scale.set(orbScale * pulse, orbScale * pulse, orbScale * pulse);
 
       // Float particles gently upward in a spiral
       const posAttr = particleGeo.attributes.position;

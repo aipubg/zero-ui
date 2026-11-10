@@ -24,7 +24,7 @@ export const ZeroProvider = ({ children }) => {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [searchPaletteOpen, setSearchPaletteOpen] = useState(false);
-  const [spatialRailExpanded, setSpatialRailExpanded] = useState(false);
+  const [spatialRailExpanded, setSpatialRailExpanded] = useState(true);
 
   // Runtime Mode: "demo" (labeled illustrative content) | "connected" (live gateway adapter) | "unavailable" (offline diagnostics)
   const [runtimeMode, setRuntimeMode] = useState("demo");

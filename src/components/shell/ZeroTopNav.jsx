@@ -3,39 +3,29 @@ import { useZero } from "../../context/ZeroContext";
 import { sound } from "../../utils/audio";
 import {
   Search,
-  ChevronDown,
   Bell,
-  Sliders,
-  Volume2,
-  VolumeX,
+  Grid,
+  Sun,
+  Moon,
+  Mic,
   Sparkles,
-  Layers,
-  Cpu,
-  CheckCircle,
-  ExternalLink
+  Minus,
+  Square,
+  X
 } from "lucide-react";
 
 export const ZeroTopNav = () => {
   const {
-    activeWorkspace,
-    setActiveWorkspace,
-    activeModel,
-    theme,
     navigateTo,
+    theme,
+    setSearchPaletteOpen,
+    themeId,
+    setThemeId,
     soundEnabled,
-    toggleSound,
-    setSearchPaletteOpen
+    toggleSound
   } = useZero();
 
-  const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-
-  const workspaces = [
-    "Personal workspace",
-    "Engineering & Architecture",
-    "Deep Research Lab",
-    "Automated Ops"
-  ];
 
   const notifications = [
     { id: 1, title: "Memory Layer Synchronized", time: "2m ago", desc: "Added 18 contextual embeddings from chat." },
@@ -43,37 +33,39 @@ export const ZeroTopNav = () => {
     { id: 3, title: "Display Hold Ready", time: "12m ago", desc: "Zero Computer observation bridge is active." }
   ];
 
+  const toggleTheme = () => {
+    sound.select();
+    const themeKeys = ["astral-violet", "celestial-cyan", "emerald-sanctuary", "cosmic-amethyst"];
+    const nextIdx = (themeKeys.indexOf(themeId) + 1) % themeKeys.length;
+    setThemeId(themeKeys[nextIdx]);
+  };
+
   return (
     <header className="absolute top-0 left-0 right-0 h-14 px-6 z-40 flex items-center justify-between select-none">
-      {/* Left: ZERO Brand & Workspace Switcher */}
-      <div className="flex items-center gap-5">
-        {/* Brand Logo */}
+      {/* Left: ZERO OS Brand Monogram */}
+      <div className="flex items-center gap-3">
         <button
           onClick={() => navigateTo("home")}
           className="flex items-center gap-2.5 group cursor-pointer"
           title="Return to Living Observatory Home"
         >
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
+            className="w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
             style={{
               background: `linear-gradient(135deg, ${theme.surface} 0%, rgba(0,0,0,0.8) 100%)`,
               borderColor: theme.accentPrimary,
               boxShadow: `0 0 16px ${theme.glow}`
             }}
           >
-            {/* Zero Monogram Ring */}
-            <div
-              className="w-4 h-4 rounded-full border-2 border-dashed group-hover:rotate-45 transition-transform duration-500"
-              style={{ borderColor: theme.accentPrimary }}
-            />
+            <span className="font-extrabold text-sm text-cyan-300 font-mono">Ø</span>
           </div>
           <div className="flex flex-col text-left">
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-sm tracking-wider font-display text-white">
-                ZERO
+                ZERO OS
               </span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-mono">
-                OS
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-950/80 border border-purple-500/40 text-purple-300 font-mono">
+                v3.2
               </span>
             </div>
             <span className="text-[9px] font-mono tracking-widest text-slate-400">
@@ -81,108 +73,35 @@ export const ZeroTopNav = () => {
             </span>
           </div>
         </button>
-
-        {/* Workspace Switcher */}
-        <div className="relative">
-          <button
-            onClick={() => {
-              sound.select();
-              setWorkspaceOpen(!workspaceOpen);
-            }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full zero-glass-pill border border-slate-700/60 hover:border-slate-500 text-xs font-medium text-slate-200 transition-all"
-          >
-            <Layers className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="max-w-[140px] truncate">{activeWorkspace}</span>
-            <ChevronDown className="w-3 h-3 text-slate-400" />
-          </button>
-
-          {workspaceOpen && (
-            <div
-              className="absolute left-0 mt-2 w-56 zero-glass-panel rounded-2xl p-2 z-50 shadow-2xl border"
-              style={{ borderColor: theme.borderHighlight }}
-            >
-              <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                Switch Workspace
-              </div>
-              {workspaces.map((ws) => (
-                <button
-                  key={ws}
-                  onClick={() => {
-                    sound.select();
-                    setActiveWorkspace(ws);
-                    setWorkspaceOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
-                    activeWorkspace === ws
-                      ? "bg-cyan-500/20 text-cyan-200 font-semibold"
-                      : "text-slate-300 hover:bg-white/5"
-                  }`}
-                >
-                  <span>{ws}</span>
-                  {activeWorkspace === ws && (
-                    <CheckCircle className="w-3.5 h-3.5 text-cyan-400" />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Center: Global Command / Search Trigger Omnibar */}
+      {/* Center: Global Omnibar (Exact Reference Image 1 copy & styling) */}
       <div className="flex-1 max-w-xl mx-8">
         <button
           onClick={() => {
             sound.select();
             setSearchPaletteOpen(true);
           }}
-          className="w-full flex items-center justify-between px-4 py-2 rounded-full zero-glass-panel border hover:border-cyan-400/60 transition-all text-xs text-slate-300 group shadow-lg"
-          style={{ borderColor: "rgba(255, 255, 255, 0.12)" }}
+          className="w-full flex items-center justify-between px-4 py-2 rounded-full zero-glass-panel border hover:border-cyan-400/60 transition-all text-xs text-slate-300 group shadow-lg cursor-pointer"
+          style={{ borderColor: "rgba(255, 255, 255, 0.16)", backdropFilter: "blur(20px)" }}
         >
           <div className="flex items-center gap-2.5">
-            <Search className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
-            <span className="text-slate-400 group-hover:text-slate-200 transition-colors">
-              Ask ZERO anything... or search models, files, automations
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
+            <span className="text-slate-300 group-hover:text-white transition-colors">
+              Ask ZERO anything... research, build, automate, or create...
             </span>
           </div>
-          <kbd className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[10px] font-mono text-slate-400">
-            Ctrl K
-          </kbd>
+          <div className="flex items-center gap-2">
+            <Mic className="w-3.5 h-3.5 text-slate-400 hover:text-cyan-300 transition-colors" />
+            <kbd className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-[10px] font-mono text-slate-300">
+              Ctrl | K
+            </kbd>
+          </div>
         </button>
       </div>
 
-      {/* Right: Telemetry Indicators & Quick Actions */}
+      {/* Right: Quick Tools & Window Controls */}
       <div className="flex items-center gap-3">
-        {/* Model Route Pill */}
-        <button
-          onClick={() => navigateTo("models")}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full zero-glass-pill border border-slate-800 text-[11px] font-mono text-slate-300 hover:border-amber-400/50 transition-colors"
-          title="Active Model Fabric Route"
-        >
-          <Cpu className="w-3 h-3 text-amber-300" />
-          <span>{activeModel.split("-")[0]}</span>
-        </button>
-
-        {/* Connection Status Indicator */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full zero-glass-pill border border-emerald-500/30 text-[11px] font-medium text-emerald-300">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="hidden sm:inline">Connected</span>
-          <span className="text-[10px] font-mono text-emerald-400/80">14ms</span>
-        </div>
-
-        {/* Sound Toggle */}
-        <button
-          onClick={toggleSound}
-          className="p-2 rounded-full zero-glass-pill text-slate-400 hover:text-white transition-colors"
-          title={soundEnabled ? "Mute interface audio" : "Enable interface audio"}
-        >
-          {soundEnabled ? (
-            <Volume2 className="w-4 h-4 text-cyan-400" />
-          ) : (
-            <VolumeX className="w-4 h-4 text-slate-500" />
-          )}
-        </button>
-
         {/* Notifications */}
         <div className="relative">
           <button
@@ -190,11 +109,11 @@ export const ZeroTopNav = () => {
               sound.select();
               setNotificationsOpen(!notificationsOpen);
             }}
-            className="relative p-2 rounded-full zero-glass-pill text-slate-400 hover:text-white transition-colors"
-            title="Notifications"
+            className="relative p-2 rounded-full zero-glass-pill text-slate-300 hover:text-white transition-colors cursor-pointer"
+            title="System Notifications"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           </button>
 
           {notificationsOpen && (
@@ -221,33 +140,35 @@ export const ZeroTopNav = () => {
           )}
         </div>
 
-        {/* Appearance & Studio Shortcut */}
+        {/* 3x3 App Grid Shortcut */}
         <button
-          onClick={() => navigateTo("appearance")}
-          className="p-2 rounded-full zero-glass-pill text-slate-400 hover:text-white hover:border-purple-400 transition-colors"
-          title="Customize Appearance & Companions"
+          onClick={() => navigateTo("projects")}
+          className="p-2 rounded-full zero-glass-pill text-slate-300 hover:text-white transition-colors cursor-pointer"
+          title="Workspaces & Applications"
         >
-          <Sparkles className="w-4 h-4 text-purple-400" />
+          <Grid className="w-4 h-4" />
         </button>
 
-        {/* Settings Shortcut */}
+        {/* Theme Toggle (Sun/Moon) */}
         <button
-          onClick={() => navigateTo("settings")}
-          className="p-2 rounded-full zero-glass-pill text-slate-400 hover:text-white hover:border-cyan-400 transition-colors"
-          title="Open Settings"
+          onClick={toggleTheme}
+          className="p-2 rounded-full zero-glass-pill text-amber-300 hover:text-amber-100 transition-colors cursor-pointer"
+          title="Cycle Celestial Lighting & Theme"
         >
-          <Sliders className="w-4 h-4 text-cyan-300" />
+          <Sun className="w-4 h-4" />
         </button>
 
-        {/* User Profile Avatar */}
-        <div
-          onClick={() => navigateTo("settings")}
-          className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full zero-glass-pill border border-slate-700 cursor-pointer hover:border-slate-500 transition-colors"
-        >
-          <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-inner">
-            Ø
-          </div>
-          <span className="text-xs font-semibold text-slate-200">Owner</span>
+        {/* Desktop Window Controls */}
+        <div className="flex items-center gap-1 pl-2 border-l border-slate-800">
+          <button className="p-1.5 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Minimize">
+            <Minus className="w-3.5 h-3.5" />
+          </button>
+          <button className="p-1.5 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Maximize">
+            <Square className="w-3 h-3" />
+          </button>
+          <button className="p-1.5 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer" title="Close">
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </header>

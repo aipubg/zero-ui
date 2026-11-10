@@ -72,8 +72,8 @@ export const ZeroAppShell = () => {
         className="relative flex-1 w-full h-full transition-all duration-300"
         style={{
           paddingTop: currentScreen !== "home" ? "4.5rem" : 0,
-          paddingLeft: spatialRailExpanded ? "17rem" : "5.5rem",
-          paddingRight: liveOpsOpen && currentScreen === "home" ? "22rem" : "1.5rem"
+          paddingLeft: currentScreen !== "home" ? (spatialRailExpanded ? "17rem" : "5.5rem") : 0,
+          paddingRight: currentScreen !== "home" ? (liveOpsOpen ? "22rem" : "1.5rem") : 0
         }}
       >
         {renderActiveScreen()}
@@ -81,9 +81,6 @@ export const ZeroAppShell = () => {
 
       {/* Left Spatial Navigation Rail */}
       <ZeroSpatialRail />
-
-      {/* Floating Conversational Command Console (Shown on Home and can jump to any task) */}
-      {currentScreen === "home" && <ZeroCommandBar />}
 
       {/* Collapsible Right Live Operations Panel */}
       <ZeroLiveOperations />

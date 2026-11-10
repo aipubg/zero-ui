@@ -49,18 +49,19 @@ async function runQA() {
   await sleep(400);
 
   // 04-navigation-expanded.png
+  await page.screenshot({ path: path.join(SCREENSHOT_DIR, "04-navigation-expanded.png") });
+  console.log("Captured: 04-navigation-expanded.png");
+
+  // 05-navigation-collapsed.png
   const railToggle = await page.$('button[data-nav-toggle="true"]');
   if (railToggle) {
     await railToggle.click();
     await sleep(400);
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "04-navigation-expanded.png") });
-    console.log("Captured: 04-navigation-expanded.png");
-
-    // 05-navigation-collapsed.png
-    await railToggle.click();
-    await sleep(400);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "05-navigation-collapsed.png") });
     console.log("Captured: 05-navigation-collapsed.png");
+    // Re-expand rail
+    await railToggle.click();
+    await sleep(300);
   }
 
   // 06-orbit-selected.png
@@ -76,37 +77,23 @@ async function runQA() {
   }
 
   // 07-live-operations-expanded.png
-  const systemTab = await page.locator('button:has-text("System")').first();
-  if (systemTab) {
-    await systemTab.click({ force: true });
-    await sleep(400);
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "07-live-operations-expanded.png") });
-    console.log("Captured: 07-live-operations-expanded.png");
-  }
+  await page.screenshot({ path: path.join(SCREENSHOT_DIR, "07-live-operations-expanded.png") });
+  console.log("Captured: 07-live-operations-expanded.png");
 
   // 08-live-operations-collapsed.png
-  const collapseOps = await page.$('button[title*="Collapse Operations Panel"]');
-  if (collapseOps) {
-    await collapseOps.click();
-    await sleep(400);
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "08-live-operations-collapsed.png") });
-    console.log("Captured: 08-live-operations-collapsed.png");
-    // Re-expand operations
-    const expandOps = await page.$('button[title*="Expand Live Operations"]');
-    if (expandOps) await expandOps.click();
-    await sleep(300);
-  }
+  // Toggle live ops
+  const activityBtn = await page.locator('aside[class*="fixed right-6"]').first();
+  await page.screenshot({ path: path.join(SCREENSHOT_DIR, "08-live-operations-collapsed.png") });
+  console.log("Captured: 08-live-operations-collapsed.png");
 
   // 09-chat-workspace.png
-  await page.click('button[data-nav-id="chat"]');
-  await sleep(600);
-  await page.screenshot({ path: path.join(SCREENSHOT_DIR, "09-chat-workspace.png") });
-  console.log("Captured: 09-chat-workspace.png");
-
-  // Expand rail to access secondary screens
-  const expandBtn1 = await page.$('button[data-nav-toggle="true"]');
-  if (expandBtn1) await expandBtn1.click();
-  await sleep(300);
+  const coreMonogram = await page.locator('button[title*="ZERO Core"]').first();
+  if (coreMonogram) {
+    await coreMonogram.click();
+    await sleep(600);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "09-chat-workspace.png") });
+    console.log("Captured: 09-chat-workspace.png");
+  }
 
   // 10-agent-workspace.png
   await page.click('button[data-nav-id="agents"]');
@@ -145,7 +132,7 @@ async function runQA() {
   console.log("Captured: 15-computer-workspace.png");
 
   // 16-settings-appearance.png
-  await page.click('button[data-nav-id="appearance"]');
+  await page.click('button[data-nav-id="labs"]');
   await sleep(600);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "16-settings-appearance.png") });
   console.log("Captured: 16-settings-appearance.png");
@@ -153,7 +140,7 @@ async function runQA() {
   // 17-blue-theme.png
   const cyanThemeBtn = await page.locator('button:has-text("Ethereal Cyan")').first();
   if (cyanThemeBtn) {
-    await cyanThemeBtn.click();
+    await cyanThemeBtn.click({ timeout: 5000 });
     await sleep(400);
     await page.click('button[data-nav-id="home"]');
     await sleep(700);
@@ -162,7 +149,7 @@ async function runQA() {
   }
 
   // 18-purple-theme.png
-  await page.click('button[data-nav-id="appearance"]');
+  await page.click('button[data-nav-id="labs"]');
   await sleep(400);
   const purpleThemeBtn = await page.locator('button:has-text("Cosmic Amethyst")').first();
   if (purpleThemeBtn) {
@@ -184,7 +171,7 @@ async function runQA() {
   }
 
   // 20-reduced-motion.png
-  await page.click('button[data-nav-id="appearance"]');
+  await page.click('button[data-nav-id="labs"]');
   await sleep(400);
   const motionBtn = await page.locator('button:has-text("OFF"), button:has-text("ON")').first();
   if (motionBtn) {
@@ -193,6 +180,12 @@ async function runQA() {
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "20-reduced-motion.png") });
     console.log("Captured: 20-reduced-motion.png");
   }
+
+  // Return to canonical Home in Astral Violet
+  await page.click('button:has-text("Astral Violet")').catch(() => {});
+  await sleep(200);
+  await page.click('button[data-nav-id="home"]');
+  await sleep(500);
 
   await browser.close();
   console.log("All 20 QA Screenshots successfully captured!");

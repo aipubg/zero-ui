@@ -26,41 +26,50 @@ async function convertImageToTransparentPNG(inputPath, outputPath, isHologram = 
 
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imgData.data;
+        const w = canvas.width;
+        const h = canvas.height;
 
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          const brightness = Math.max(r, g, b);
+        if (isHologram) {
+          // Pure black keying with soft edge feathering on left boundary and bottom hem
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const i = (y * w + x) * 4;
+              const r = data[i];
+              const g = data[i + 1];
+              const b = data[i + 2];
+              const br = Math.max(r, g, b);
 
-          if (isHologram) {
-            // For hologram on black: brightness directly maps to alpha smoothly
-            // so glowing hair and starlight blend transparently into any background!
-            if (brightness < 12) {
-              data[i + 3] = 0; // Pure transparent background
-            } else if (brightness < 45) {
-              // Smooth feathering
-              data[i + 3] = Math.floor(((brightness - 12) / 33) * 255);
-            } else {
-              data[i + 3] = 255;
-            }
-          } else {
-            // For mascot: solid opaque character on black background
-            // Background is pure black (r < 15, g < 15, b < 15)
-            if (r < 18 && g < 18 && b < 18) {
-              data[i + 3] = 0;
-            } else if (r < 32 && g < 32 && b < 32) {
-              // Edge antialiasing feather
-              const avg = (r + g + b) / 3;
-              data[i + 3] = Math.floor(((avg - 18) / 14) * 255);
-            } else {
-              data[i + 3] = 255;
+              let alpha = 255;
+              if (br <= 32) {
+                alpha = 0;
+              } else if (br <= 72) {
+                alpha = Math.floor(((br - 32) / 40) * 255);
+              }
+
+              // Smoothly dissolve the left ribbon boundary (x < 140) into starlight:
+              if (x < 140) {
+                const leftFactor = Math.pow(x / 140, 1.8);
+                alpha = Math.floor(alpha * leftFactor);
+              }
+              // Smoothly dissolve the right boundary if any:
+              if (x > w - 80) {
+                const rightFactor = Math.max(0, (w - x) / 80);
+                alpha = Math.floor(alpha * rightFactor);
+              }
+              // Smoothly dissolve bottom hem (y > h * 0.72) into starlight above the dais:
+              if (y > h * 0.72) {
+                const bottomFactor = Math.max(0, 1 - (y - h * 0.72) / (h * 0.28));
+                alpha = Math.floor(alpha * Math.pow(bottomFactor, 1.5));
+              }
+
+              data[i + 3] = alpha;
             }
           }
         }
 
         ctx.putImageData(imgData, 0, 0);
-        resolve(canvas.toDataURL("image/png").split(",")[1]);
+        const resultUrl = canvas.toDataURL("image/png");
+        resolve(resultUrl.split(",")[1]);
       };
       img.src = dataUrl;
     });
@@ -70,21 +79,13 @@ async function convertImageToTransparentPNG(inputPath, outputPath, isHologram = 
 
   const buffer = Buffer.from(pngBase64, "base64");
   fs.writeFileSync(outputPath, buffer);
-  console.log(`Saved transparent PNG: ${outputPath} (${buffer.length} bytes)`);
+  console.log(`Saved transparent alpha PNG to: ${outputPath} (${(buffer.length / 1024).toFixed(1)} KB)`);
 }
 
 async function run() {
-  const brainDir = "C:\\Users\\Professor Zero\\.gemini\\antigravity\\brain\\38655c78-db6a-4b60-97f6-13670cee4399";
-  const assetsDir = "F:\\ZERO UI\\public\\assets";
-
-  const genieIn = path.join(brainDir, "genie_ai_companion_1794338780909.jpg");
-  const genieOut = path.join(assetsDir, "hologram-genie-alpha.png");
-
-  const mascotIn = path.join(brainDir, "zero_robot_mascot_1794338796162.jpg");
-  const mascotOut = path.join(assetsDir, "robot-mascot-alpha.png");
-
-  await convertImageToTransparentPNG(genieIn, genieOut, true);
-  await convertImageToTransparentPNG(mascotIn, mascotOut, false);
+  const genieSource = "C:\\Users\\Professor Zero\\.gemini\\antigravity\\brain\\38655c78-db6a-4b60-97f6-13670cee4399\\genie_ai_concept_art_1794342290909.jpg";
+  const genieOut = "f:\\ZERO UI\\public\\assets\\hologram-genie-alpha.png";
+  await convertImageToTransparentPNG(genieSource, genieOut, true);
 }
 
 run().catch(console.error);

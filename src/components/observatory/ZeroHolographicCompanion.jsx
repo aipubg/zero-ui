@@ -32,7 +32,7 @@ export const ZeroHolographicCompanion = () => {
   const activeState = isListening ? "listening" : companionState;
 
   return (
-    <div className="relative w-[640px] h-[640px] flex items-center justify-center select-none pointer-events-none z-15">
+    <div className="relative w-[720px] h-[760px] flex items-center justify-center select-none pointer-events-none z-15">
       {/* 1. Three.js WebGL 3D Dais, Light Pillar & Volumetric Particles */}
       <ZeroThreeHologram companionState={activeState} />
 
@@ -46,7 +46,7 @@ export const ZeroHolographicCompanion = () => {
       >
         {/* State-specific Energy Halo Radiating Behind Character Head */}
         <div
-          className={`absolute top-10 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
+          className={`absolute top-10 w-96 h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
             activeState === "listening"
               ? "opacity-60 scale-125"
               : activeState === "thinking"
@@ -58,30 +58,16 @@ export const ZeroHolographicCompanion = () => {
           }}
         />
 
-        {/* Outer Circular Celestial Starlight Ring behind Head */}
-        <div
-          className="absolute top-16 w-72 h-72 rounded-full border border-dashed opacity-40 animate-spin pointer-events-none"
-          style={{
-            borderColor: theme.accentTertiary,
-            animationDuration: "50s",
-            boxShadow: `0 0 20px ${theme.glowSecondary}`
-          }}
-        />
-
-        {/* Independent Transparent Holographic AI Genie Asset with Smooth Energy Fade */}
+        {/* Independent Transparent Holographic AI Genie Asset with Responsive Proportions */}
         <div 
-          className="relative w-[480px] h-[540px] flex items-center justify-center animate-hologram-float"
-          style={{
-            maskImage: "linear-gradient(to bottom, black 0%, black 70%, rgba(0,0,0,0.6) 84%, rgba(0,0,0,0.15) 94%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 70%, rgba(0,0,0,0.6) 84%, rgba(0,0,0,0.15) 94%, transparent 100%)"
-          }}
+          className="relative w-[clamp(380px,36vw,600px)] h-[clamp(440px,58vh,690px)] flex items-center justify-center animate-hologram-float"
         >
           <img
             src="/assets/hologram-genie-alpha.png"
             alt="ZERO Autonomous AI Genie Companion"
             className="w-full h-full object-contain pointer-events-none"
             style={{
-              filter: `contrast(1.08) brightness(1.04) drop-shadow(0 12px 24px rgba(0,0,0,0.5))`
+              filter: `contrast(1.06) brightness(1.05) drop-shadow(0 16px 32px rgba(0,0,0,0.45))`
             }}
           />
 
@@ -99,36 +85,10 @@ export const ZeroHolographicCompanion = () => {
           {/* Active Voice Listening Acoustic Wave Ripple */}
           {activeState === "listening" && (
             <div
-              className="absolute top-[48%] right-28 w-24 h-24 rounded-full border-2 animate-ping opacity-75 pointer-events-none"
+              className="absolute top-[35%] right-20 w-28 h-28 rounded-full border-2 animate-ping opacity-75 pointer-events-none"
               style={{ borderColor: theme.accentPrimary }}
             />
           )}
-        </div>
-
-        {/* Subtitle / Holographic Status Indicator Pill */}
-        <div
-          className="absolute -bottom-4 flex items-center gap-2 px-4 py-1.5 rounded-full zero-glass-pill border shadow-xl backdrop-blur-xl"
-          style={{
-            borderColor: theme.borderHighlight,
-            boxShadow: `0 0 16px ${theme.glow}`
-          }}
-        >
-          <span
-            className="w-2 h-2 rounded-full animate-ping"
-            style={{ backgroundColor: theme.accentPrimary }}
-          />
-          <span className="text-xs font-semibold tracking-wider uppercase text-cyan-200">
-            {activeState === "listening"
-              ? "ZERO · Listening to Voice"
-              : activeState === "thinking"
-              ? "ZERO · Synthesizing Intent"
-              : activeState === "completed"
-              ? "ZERO · Task Completed"
-              : "ZERO · Living Intelligence"}
-          </span>
-          <span className="text-[10px] text-amber-300 font-mono font-bold">
-            v3.8
-          </span>
         </div>
       </div>
     </div>

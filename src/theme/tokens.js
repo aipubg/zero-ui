@@ -135,28 +135,39 @@ export const ORBIT_CAPABILITIES = [
     shortDesc: "8 Layers · 12.4 GB Knowledge",
     color: "#00f2fe",
     path: "/memory",
-    badge: "3.8k Items",
-    angle: -90 // top
+    badge: "Synchronized",
+    angle: 215
   },
   {
-    id: "agents",
-    label: "Agents",
-    icon: "Bot",
-    shortDesc: "4 Active · 2 Idle Specialists",
-    color: "#9d4edd",
-    path: "/agents",
-    badge: "Team Ready",
-    angle: -45 // top right
+    id: "research",
+    label: "Research",
+    icon: "Search",
+    shortDesc: "ArXiv, Web & Multi-hop Reasoning",
+    color: "#38bdf8",
+    path: "/search",
+    badge: "Autonomous",
+    angle: 175
   },
   {
-    id: "models",
-    label: "Models",
-    icon: "Cpu",
-    shortDesc: "5 Providers · 14 Routing Models",
+    id: "projects",
+    label: "Projects",
+    icon: "FolderGit2",
+    shortDesc: "4 Active Codebases & Git Repos",
+    color: "#c084fc",
+    path: "/projects",
+    badge: "3 Active",
+    angle: 135
+  },
+  {
+    id: "create",
+    label: "Create",
+    icon: "Code",
+    shortDesc: "Rapid Architecture & App Builder",
     color: "#ffd166",
-    path: "/models",
-    badge: "Auto-Routing",
-    angle: 0 // right
+    path: "/chat",
+    badge: "ZERO Core",
+    angle: 90,
+    isFeatured: true
   },
   {
     id: "automations",
@@ -166,36 +177,26 @@ export const ORBIT_CAPABILITIES = [
     color: "#06d6a0",
     path: "/automations",
     badge: "Next in 14m",
-    angle: 45 // bottom right
+    angle: 45
   },
   {
-    id: "computer",
-    label: "Computer",
-    icon: "Monitor",
-    shortDesc: "Screen Intel Active · Display 1",
-    color: "#4cc9f0",
-    path: "/computer",
-    badge: "Direct Control",
-    angle: 135 // bottom left
+    id: "agents",
+    label: "Agents",
+    icon: "Bot",
+    shortDesc: "4 Active · 2 Idle Specialists",
+    color: "#9d4edd",
+    path: "/agents",
+    badge: "Team Ready",
+    angle: 5
   },
   {
-    id: "skills",
-    label: "Skills",
-    icon: "Sparkles",
-    shortDesc: "12 Installed Capabilities",
-    color: "#f72585",
-    path: "/skills",
-    badge: "Verified",
-    angle: 180 // left
-  },
-  {
-    id: "plugins",
-    label: "Plugins",
-    icon: "Blocks",
-    shortDesc: "6 Active External Bridges",
-    color: "#7209b7",
-    path: "/plugins",
-    badge: "All Syncing",
-    angle: 225 // top left
+    id: "models",
+    label: "Models",
+    icon: "Cpu",
+    shortDesc: "5 Providers · 14 Routing Models",
+    color: "#00f2fe",
+    path: "/models",
+    badge: "Auto-Routing",
+    angle: -35
   }
 ];
