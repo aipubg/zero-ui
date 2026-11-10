@@ -5,15 +5,14 @@ import { Sparkles, Heart } from "lucide-react";
 
 export const ZeroMascotCompanion = () => {
   const {
-    theme,
     mascotVisible,
+    spatialRailExpanded,
     mascotEmotion,
     setMascotEmotion,
-    reducedMotion,
-    spatialRailExpanded
+    theme
   } = useZero();
 
-  const [speechBubble, setSpeechBubble] = useState("Hi Owner! All systems running smooth! ✨");
+  const [speechBubble, setSpeechBubble] = useState("All 3 background agents are cruising along! 🚀");
   const [showBubble, setShowBubble] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
 
@@ -34,7 +33,6 @@ export const ZeroMascotCompanion = () => {
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     setSpeechBubble(randomQuote);
 
-    // Cycle emotion on click
     const emotions = ["happy", "curious", "proud", "thinking"];
     const nextEmotion = emotions[(emotions.indexOf(mascotEmotion) + 1) % emotions.length];
     setMascotEmotion(nextEmotion);
@@ -53,7 +51,7 @@ export const ZeroMascotCompanion = () => {
       {/* Speech / Thought Bubble */}
       {showBubble && (
         <div
-          className="absolute -top-16 left-6 px-4 py-2 rounded-2xl zero-glass-panel border text-xs font-semibold text-slate-100 flex items-center gap-2 shadow-2xl animate-bounce backdrop-blur-2xl whitespace-nowrap"
+          className="absolute -top-16 left-6 px-4 py-2 rounded-2xl zero-glass-panel border text-xs font-semibold text-slate-100 flex items-center gap-2 shadow-2xl animate-bounce backdrop-blur-2xl whitespace-nowrap z-30"
           style={{
             borderColor: theme.accentPrimary,
             boxShadow: `0 0 20px ${theme.glow}`
@@ -71,47 +69,28 @@ export const ZeroMascotCompanion = () => {
         </div>
       )}
 
-      {/* Mascot Interactive Wrapper */}
+      {/* Invisible Interactive Hit-Zone with Subtle Glow Ring over the Mascot */}
       <div
         data-mascot="true"
         onClick={handleMascotClick}
         onMouseEnter={() => sound.hover()}
-        className={`group relative cursor-pointer flex flex-col items-center transition-transform duration-300 ${
+        className={`group relative cursor-pointer w-48 h-48 rounded-full flex items-center justify-center transition-transform duration-300 ${
           isBouncing
-            ? "scale-110 -translate-y-2 rotate-2"
-            : "hover:scale-105 hover:-translate-y-1"
+            ? "scale-105 -translate-y-2"
+            : "hover:scale-102"
         }`}
-        title="ZERO Buddy Mascot (Click to interact and change expression)"
+        title="ZERO Buddy & Kitten (Click to interact)"
       >
-        {/* Soft Glowing Plush Floor Cushion Underneath */}
-        <div
-          className="absolute -bottom-4 w-44 h-12 rounded-[100%] blur-md opacity-60 pointer-events-none"
-          style={{
-            background: `radial-gradient(ellipse at center, ${theme.accentSecondary} 0%, transparent 75%)`
-          }}
-        />
+        {/* Soft interactive hover glow rim on rug */}
+        <div className="absolute inset-0 rounded-full border border-purple-400/0 group-hover:border-purple-400/50 group-hover:shadow-[0_0_24px_rgba(168,85,247,0.35)] transition-all duration-500 pointer-events-none" />
 
-        {/* Mascot & Kitten Character Container with Viewport Responsive Dimensions */}
-        <div
-          className={`relative w-[clamp(140px,13vw,210px)] h-[clamp(140px,13vw,210px)] flex items-center justify-center ${
-            reducedMotion ? "" : "animate-mascot-idle"
-          }`}
-        >
-          {/* Genuine Independent Transparent Robot Mascot & Sleeping Kitten Asset */}
-          <img
-            src="/assets/robot-mascot-alpha.png"
-            alt="ZERO Buddy Robot Mascot with Sleeping Kitten"
-            className="w-full h-full object-contain pointer-events-none drop-shadow-[0_16px_28px_rgba(0,0,0,0.65)]"
+        {/* Emotion ripple on click */}
+        {isBouncing && (
+          <div
+            className="absolute inset-4 rounded-full border-2 border-cyan-400 animate-ping pointer-events-none opacity-80"
+            style={{ borderColor: theme.accentPrimary }}
           />
-
-          {/* Interactive Emotion Ripple on Click */}
-          {isBouncing && (
-            <div
-              className="absolute top-1/4 left-1/4 w-12 h-12 rounded-full border-2 border-cyan-400 animate-ping pointer-events-none opacity-80"
-              style={{ borderColor: theme.accentPrimary }}
-            />
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

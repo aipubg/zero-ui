@@ -112,7 +112,7 @@ export const THEMES = {
 };
 
 export const ENVIRONMENTS = [
-  { id: "sanctuary", name: "Night Observatory Sanctuary", path: "/assets/env-sanctuary.jpg", desc: "Moonlit celestial arch with cherry blossoms & starry castle" },
+  { id: "sanctuary", name: "Night Observatory Sanctuary", path: "/assets/celestial-sanctuary-master.jpg", desc: "Moonlit celestial arch with cherry blossoms & starry castle" },
   { id: "cathedral", name: "Celestial Gothic Cathedral", path: "/assets/env-cathedral.jpg", desc: "Soaring gothic glass arches overlooking a moonlit clock city" },
   { id: "library", name: "Moonlit Archive & Lanterns", path: "/assets/env-library.jpg", desc: "Cozy magical library lined with books, soft lantern light & blossoms" },
   { id: "desk", name: "Robot Pilot Observatory", path: "/assets/env-robot-desk.jpg", desc: "Interactive tactical workstation with multi-screen holograms" },
@@ -136,7 +136,7 @@ export const ORBIT_CAPABILITIES = [
     color: "#00f2fe",
     path: "/memory",
     badge: "Synchronized",
-    angle: 215
+    angle: 205
   },
   {
     id: "research",
@@ -146,17 +146,17 @@ export const ORBIT_CAPABILITIES = [
     color: "#38bdf8",
     path: "/search",
     badge: "Autonomous",
-    angle: 175
+    angle: 165
   },
   {
     id: "projects",
     label: "Projects",
-    icon: "FolderGit2",
+    icon: "Box",
     shortDesc: "4 Active Codebases & Git Repos",
     color: "#c084fc",
     path: "/projects",
     badge: "3 Active",
-    angle: 135
+    angle: 125
   },
   {
     id: "create",
@@ -171,32 +171,32 @@ export const ORBIT_CAPABILITIES = [
   },
   {
     id: "automations",
-    label: "Automations",
+    label: "Automate",
     icon: "Zap",
     shortDesc: "6 Scheduled · 2 Running Now",
     color: "#06d6a0",
     path: "/automations",
     badge: "Next in 14m",
-    angle: 45
+    angle: 55
   },
   {
     id: "agents",
     label: "Agents",
-    icon: "Bot",
+    icon: "Users",
     shortDesc: "4 Active · 2 Idle Specialists",
     color: "#9d4edd",
     path: "/agents",
     badge: "Team Ready",
-    angle: 5
+    angle: 15
   },
   {
     id: "models",
-    label: "Models",
-    icon: "Cpu",
+    label: "Workspaces",
+    icon: "Layers",
     shortDesc: "5 Providers · 14 Routing Models",
     color: "#00f2fe",
     path: "/models",
     badge: "Auto-Routing",
-    angle: -35
+    angle: 335
   }
 ];
